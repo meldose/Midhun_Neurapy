@@ -1,7 +1,7 @@
 from neurapy.robot import Robot
 import time  
 import numpy
-
+import numpy as np
 r = Robot()
 joint_property = {
     "speed": 50.0,

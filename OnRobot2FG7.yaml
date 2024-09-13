@@ -1,0 +1,346 @@
+name: OnRobot2FG7
+communication_bus_system: 1
+conn_port: /dev/ttyUSB0
+gripper_slave_address: 65
+baudrate: 1000000
+data_bits: 8
+parity: 1
+stop_bits: 1
+Registers:
+  setWidth:
+    &setWidth
+    type: singleWrite
+    register_address: 0
+    registers:
+      - name: widthMM/10
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 300
+  setForce:
+    &setForce
+    type: singleWrite
+    register_address: 1
+    registers:
+      - name: forceNewton
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 20
+          max: 140
+  setSpeed:
+    &setSpeed
+    type: singleWrite
+    register_address: 2
+    registers:
+      - name: speedPercent
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 100
+  setCommand:
+    &setCommand
+    type: singleWrite
+    register_address: 3
+    registers:
+      - name: commandID
+        gui_element: selector
+        rule: AllowedValues
+        rule_values:
+          allowed_values:
+            - 1
+            - 2
+            - 3
+  getStatus:
+    &getStatus
+    type: singleRead
+    register_address: 256
+    registers:
+      - name: Status
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getExternalWidth:
+    &getExternalWidth
+    type: singleRead
+    register_address: 257
+    registers:
+      - name: ExternalWidth
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getInternalWidth:
+    &getInternalWidth
+    type: singleRead
+    register_address: 258
+    registers:
+      - name: InternalWidth
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getMinExternalWidth:
+    type: singleRead
+    register_address: 259
+    registers:
+      - name: MinExternalWidth
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getMaxExternalWidth:
+    type: singleRead
+    register_address: 260
+    registers:
+      - name: MaxExternalWidth
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getMinInternalWidth:
+    type: singleRead
+    register_address: 261
+    registers:
+      - name: MinInternalWidth
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getMaxInternalWidth:
+    type: singleRead
+    register_address: 262
+    registers:
+      - name: " MaxInternalWidth"
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getForce:
+    type: singleRead
+    register_address: 263
+    registers:
+      - name: ForceNewton
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  setFingerLength:
+    &setFingerLength
+    type: singleWrite
+    register_address: 1024
+    registers:
+      - name: FingerLengthMM/10
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getFingerLength:
+    &getFingerLength
+    type: singleRead
+    register_address: 1024
+    registers:
+      - name: FingerLengthMM/10
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  setFingerHeight:
+    &setFingerHeight
+    type: singleWrite
+    register_address: 1025
+    registers:
+      - name: FingerHeightMM/10
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getFingerHeight:
+    &getFingerHeight
+    type: singleRead
+    register_address: 1025
+    registers:
+      - name: FingerHeightMM/10
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  setFingerOrientation:
+    &setFingerOrientation
+    type: singleWrite
+    register_address: 1026
+    registers:
+      - name: FingerOrientation
+        gui_element: selector
+        rule: AllowedValues
+        rule_values:
+          allowed_values:
+            - 0
+            - 1
+  getFingerOrientation:
+    &getFingerOrientation
+    type: singleRead
+    register_address: 1026
+    registers: []
+  setFingertipOffset:
+    &setFingertipOffset
+    type: singleWrite
+    register_address: 1027
+    registers:
+      - name: FingertipOffsetMM/100
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getFingertipOffset:
+    &getFingertipOffset
+    type: singleRead
+    register_address: 1027
+    registers:
+      - name: FingertipOffsetMM/100
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getMaxForce:
+    &getMaxForce
+    type: singleRead
+    register_address: 1030
+    registers:
+      - name: MaxForceNewton
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  setWidth_Force_Speed_cmd:
+    &setWidth_Force_Speed_cmd
+    type: multiWrite
+    register_address: 0
+    registers:
+      - name: width
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 300
+      - name: force
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 20
+          max: 140
+      - name: speed
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 10
+          max: 100
+      - name: cmdID
+        gui_element: selector
+        rule: AllowedValues
+        rule_values:
+          allowed_values:
+            - 1
+            - 2
+            - 3
+Functions:
+  doGrip:
+    - command: setWidth
+      is_Shown: true
+      default_value:
+        - 100
+      <<: *setWidth
+    - command: setForce
+      is_Shown: true
+      default_value:
+        - 80
+      <<: *setForce
+    - command: setSpeed
+      is_Shown: true
+      default_value:
+        - 50
+      <<: *setSpeed
+    - command: setCommand
+      is_Shown: true
+      default_value:
+        - 1
+      <<: *setCommand
+  returnStatus:
+    - command: getStatus
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getStatus
+  returnCurrentWidth:
+    - command: getExternalWidth
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getExternalWidth
+    - command: getInternalWidth
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getInternalWidth
+  setNewFingerGeometry:
+    - command: setFingerLength
+      is_Shown: true
+      default_value:
+        - 0
+      <<: *setFingerLength
+    - command: setFingerHeight
+      is_Shown: true
+      default_value:
+        - 0
+      <<: *setFingerHeight
+    - command: setFingerOrientation
+      is_Shown: true
+      default_value:
+        - 0
+      <<: *setFingerOrientation
+    - command: setFingertipOffset
+      is_Shown: true
+      default_value:
+        - 0
+      <<: *setFingertipOffset
+  returnFingerGeometry:
+    - command: getFingerLength
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getFingerLength
+    - command: getFingerHeight
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getFingerHeight
+    - command: getFingerOrientation
+      is_Shown: true
+      default_value: []
+      <<: *getFingerOrientation
+    - command: getFingerOrientation
+      is_Shown: true
+      default_value: []
+      <<: *getFingerOrientation
+    - command: getFingertipOffset
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getFingertipOffset
+    - command: getMaxForce
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getMaxForce
+  open:
+    - command: setWidth_Force_Speed_cmd
+      is_Shown: true
+      default_value:
+        - 300
+        - 60
+        - 50
+        - 1
+      <<: *setWidth_Force_Speed_cmd
+  close:
+    - command: setWidth_Force_Speed_cmd
+      is_Shown: false
+      default_value:
+        - 0
+        - 60
+        - 60
+        - 1
+      <<: *setWidth_Force_Speed_cmd
+  init:
+    - command: setCommand
+      is_Shown: true
+      default_value:
+        - 1
+      <<: *setCommand

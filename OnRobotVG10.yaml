@@ -1,0 +1,85 @@
+name: OnRobotVG10
+communication_bus_system: 1
+conn_port: /dev/ttyUSB0
+gripper_slave_address: 65
+baudrate: 1000000
+data_bits: 8
+parity: 1
+stop_bits: 1
+Registers:
+  setControl_Vaccum:
+    &setControlVaccum
+    type: multiWrite
+    register_address: 0
+    registers:
+      - name: force
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: width
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+  setCurrentLimit:
+    &setCurrentLimit
+    type: singleWrite
+    register_address: 2
+    registers:
+      - name: Current_mA
+        gui_element: textfield
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 1000
+  getActualVaccum:
+    &getActualVaccum
+    type: multiRead
+    register_address: 258
+    registers:
+      - name: ChannelA_1/1000
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+      - name: ChannelB_1/1000
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+Functions:
+  init:
+    - command: setControlVaccum
+      is_Shown: false
+      default_value:
+        - 128
+        - 128
+      <<: *setControlVaccum
+  open:
+    - command: setControlVaccum
+      is_Shown: false
+      default_value:
+        - 331
+        - 331
+      <<: *setControlVaccum
+  close:
+    - command: setControlVaccum
+      is_Shown: false
+      default_value:
+        - 0
+        - 0
+      <<: *setControlVaccum
+  returnActualVaccum:
+    - command: getActualVaccum
+      is_Shown: true
+      default_value:
+        - null
+        - null
+      <<: *getActualVaccum
+  currentLimit:
+    - command: setCurrentLimit
+      is_Shown: false
+      default_value:
+        - 500
+      <<: *setCurrentLimit

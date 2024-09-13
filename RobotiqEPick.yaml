@@ -1,0 +1,208 @@
+name: RobotiqEpick
+communication_bus_system: 1
+conn_port: /dev/ttyUSB0
+gripper_slave_address: 9
+baudrate: 115200
+data_bits: 8
+parity: 0
+stop_bits: 1
+Registers:
+  setActionReqest:
+    &setActionReqest
+    type: singleWrite
+    register_address: 1000
+    registers:
+      - name: ActionRequest
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+  setCommand:
+    &setCommand
+    type: multiWrite
+    register_address: 1000
+    registers:
+      - name: cmdID
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: force
+        gui_element: slider
+        rule: InvertedBoundaries
+        rule_values:
+          min: 0
+          max: 100
+  setReleaseDelay_MinRelativePressureReq:
+    type: singleWrite
+    register_address: 1002
+    registers:
+      - name: ReleaseDelay_MinRelativePressureReq
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+  getStatus:
+    &getStatus
+    type: multiRead
+    register_address: 2000
+    registers:
+      - name: Status_gVAS
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+      - name: KFLT-gFLT_gPR
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+      - name: gP0
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  setPressureReq_ActiveRelease_positive:
+    &setPressureReq_ActiveRelease_positive
+    type: multiWrite
+    register_address: 1000
+    registers:
+      - name: ActionRequest
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: PressureRequestAmbient
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 100
+          max: 255
+  setPressureReq_Vaccum:
+    &setPressureReq_Vaccum
+    type: multiWrite
+    register_address: 1000
+    registers:
+      - name: ActionRequest
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: setPressureReq_Vaccum
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 99
+  SetInitCommand:
+    &SetInitCommand
+    type: multiWrite
+    register_address: 1000
+    registers:
+      - name: ActionRequest
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: PressureRequest
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 255
+      - name: ReleaseDelay_MinRelativePressureReq
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+  setPressureReq_ActiveRelease_Ambient:
+    &setPressureReq_ActiveRelease_Ambient
+    type: multiWrite
+    register_address: 1000
+    registers:
+      - name: ActionRequest
+        gui_element: None
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: PressureRequestAmbient
+        gui_element: None
+        rule: AllowedValues
+        rule_values:
+          allowed_values:
+            - 100
+Functions:
+  init:
+    - command: SetInitCommand
+      is_Shown: false
+      default_value:
+        - 0
+        - 0
+        - 0
+      <<: *SetInitCommand
+    - command: setActionReqest
+      is_Shown: false
+      default_value:
+        - 256
+      <<: *setActionReqest
+  open:
+    - command: setCommand
+      is_Shown: true
+      default_value:
+        - 2304
+        - 100
+      <<: *setCommand
+  close:
+    - command: setCommand
+      is_Shown: false
+      default_value:
+        - 2304
+        - 0
+      <<: *setCommand
+  Command:
+    - command: setCommand
+      is_Shown: true
+      default_value:
+        - 2304
+        - 50
+      <<: *setCommand
+  ActiveRelease_Positive:
+    - command: setPressureReq_ActiveRelease_positive
+      is_Shown: false
+      default_value:
+        - 2304
+        - 255
+      <<: *setPressureReq_ActiveRelease_positive
+  ActiveRelease_Ambient:
+    - command: setPressureReq_ActiveRelease_Ambient
+      is_Shown: false
+      default_value:
+        - 2304
+        - 100
+      <<: *setPressureReq_ActiveRelease_Ambient
+  Vaccum_Negative:
+    - command: setPressureReq_Vaccum
+      is_Shown: true
+      default_value:
+        - 2304
+        - 0
+      <<: *setPressureReq_Vaccum
+  Stop_motor:
+    - command: setActionReqest
+      is_Shown: true
+      default_value:
+        - 256
+      <<: *setActionReqest
+  returnStatus:
+    - command: getStatus
+      is_Shown: true
+      default_value:
+        - null
+        - null
+        - null
+      <<: *getStatus

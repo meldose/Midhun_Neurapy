@@ -1,0 +1,213 @@
+name: OnRobotRG6
+communication_bus_system: 1
+conn_port: /dev/ttyUSB0
+gripper_slave_address: 65
+baudrate: 1000000
+data_bits: 8
+parity: 1
+stop_bits: 1
+Registers:
+  setForce:
+    &setForce
+    type: singleWrite
+    register_address: 0
+    registers:
+      - name: force(N/10)
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 1200
+  setWidth:
+    &setWidth
+    type: singleWrite
+    register_address: 1
+    registers:
+      - name: width(mm/10)
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 1600
+  setControl:
+    &setControl
+    type: singleWrite
+    register_address: 2
+    registers:
+      - name: commandID
+        gui_element: selector
+        rule: AllowedValues
+        rule_values:
+          allowed_values:
+            - 1
+            - 8
+            - 16
+  getFingertipOffset:
+    &getFingertipOffset
+    type: singleRead
+    register_address: 258
+    registers:
+      - name: " FingertipOffset(mm/100)"
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getActualDepth:
+    &getActualDepth
+    type: singleRead
+    register_address: 263
+    registers:
+      - name: ActualDepth(mm/10)
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getActualRelativeDepth:
+    &getActualRelativeDepth
+    type: singleRead
+    register_address: 264
+    registers:
+      - name: ActualRelativeDepth(mm/10)
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getActualWidth:
+    &getActualWidth
+    type: singleRead
+    register_address: 267
+    registers:
+      - name: ActualWidth(mm/10)
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getStatus:
+    &getStatus
+    type: singleRead
+    register_address: 268
+    registers:
+      - name: status
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getActualWidthWithOffset:
+    &getActualWidthWithOffset
+    type: singleRead
+    register_address: 275
+    registers:
+      - name: ActualWidthWithOffset(mm/10)
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  setFingertipoffset:
+    &setFingertipoffset
+    type: singleWrite
+    register_address: 1031
+    registers:
+      - name: SetFingertipoffset(mm/10)
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  setCommad:
+    &setCommad
+    type: multiWrite
+    register_address: 0
+    registers:
+      - name: force
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 1200
+      - name: width
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 1600
+      - name: cmdID
+        gui_element: selector
+        rule: AllowedValues
+        rule_values:
+          allowed_values:
+            - 1
+            - 8
+            - 16
+Functions:
+  returnStatus:
+    - command: getStatus
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getStatus
+  returnFingertipOffset:
+    - command: getFingertipOffset
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getFingertipOffset
+  returnActualDepth:
+    - command: getActualDepth
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getActualDepth
+  returnRelativeDepth:
+    - command: getActualRelativeDepth
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getActualRelativeDepth
+  returnActualWidth:
+    - command: getActualWidth
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getActualWidth
+  returnActualWidthWithOffset:
+    - command: getActualWidthWithOffset
+      is_Shown: true
+      default_value:
+        - null
+      <<: *getActualWidthWithOffset
+  setNewFingertipOffset:
+    - command: setFingertipoffset
+      is_Shown: true
+      default_value:
+        - 100
+      <<: *setFingertipoffset
+  Grip:
+    - command: setForce
+      is_Shown: true
+      default_value:
+        - 800
+      <<: *setForce
+    - command: setWidth
+      is_Shown: true
+      default_value:
+        - 500
+      <<: *setWidth
+    - command: setControl
+      is_Shown: true
+      default_value:
+        - 16
+      <<: *setControl
+  open:
+    - command: setCommad
+      is_Shown: false
+      default_value:
+        - 800
+        - 1600
+        - 16
+      <<: *setCommad
+  close:
+    - command: setCommad
+      is_Shown: false
+      default_value:
+        - 800
+        - 0
+        - 16
+      <<: *setCommad
+  init:
+    - command: setControl
+      is_Shown: true
+      default_value:
+        - 16
+      <<: *setControl

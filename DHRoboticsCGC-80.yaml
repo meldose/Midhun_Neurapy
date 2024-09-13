@@ -1,0 +1,175 @@
+name: DHRoboticsCGC-80
+communication_bus_system: 1
+conn_port: /dev/ttyUSB0
+gripper_slave_address: 1
+baudrate: 115200
+data_bits: 8
+parity: 0
+stop_bits: 1
+Registers:
+  setCommadOpen:
+    &setCommadOpen
+    type: multiWrite
+    register_address: 258
+    registers:
+      - name: force
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 20
+          max: 100
+      - name: width
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 1000
+      - name: speed
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 100
+  getforce:
+    &getforce
+    type: multiRead
+    register_address: 257
+    registers:
+      - name: CloseForceNewton
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+      - name: OpenForceNewton
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getPositionRef:
+    &getPositionRef
+    type: singleRead
+    register_address: 259
+    registers:
+      - name: PositionPercentage
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getPosition:
+    &getPosition
+    type: singleRead
+    register_address: 514
+    registers:
+      - name: Position
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getInitState:
+    &getInitState
+    type: singleRead
+    register_address: 512
+    registers:
+      - name: InitState
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getGripperState:
+    &getGripperState
+    type: singleRead
+    register_address: 513
+    registers:
+      - name: GripperState
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  setCommandClose:
+    &setCommandClose
+    type: multiWrite
+    register_address: 257
+    registers:
+      - name: force
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 20
+          max: 100
+      - name: reserved_do_not_use
+        gui_element: None
+        rule: None
+        rule_values: {}
+      - name: width
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 1000
+      - name: speed
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 1
+          max: 100
+  init:
+    &init
+    type: singleWrite
+    register_address: 256
+    registers:
+      - name: init
+        gui_element: None
+        rule: AllowedValues
+        rule_values:
+          allowed_values:
+            - 1
+            - 165
+Functions:
+  open:
+    - command: setCommadOpen
+      is_Shown: true
+      default_value:
+        - 80
+        - 100
+        - 80
+      <<: *setCommadOpen
+  close:
+    - command: setCommandClose
+      is_Shown: false
+      default_value:
+        - 80
+        - 0
+        - 0
+        - 80
+      <<: *setCommandClose
+  init:
+    - command: init
+      is_Shown: false
+      default_value:
+        - 165
+      <<: *init
+  returnForce:
+    - command: getforce
+      is_Shown: false
+      default_value:
+        - null
+        - null
+      <<: *getforce
+  returnPositionRef:
+    - command: getPositionRef
+      is_Shown: false
+      default_value:
+        - null
+      <<: *getPositionRef
+  returnPosition:
+    - command: getPosition
+      is_Shown: false
+      default_value:
+        - null
+      <<: *getPosition
+  returnInitState:
+    - command: getInitState
+      is_Shown: false
+      default_value:
+        - null
+      <<: *getInitState
+  returnGripperState:
+    - command: getGripperState
+      is_Shown: false
+      default_value:
+        - null
+      <<: *getGripperState

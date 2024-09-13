@@ -1,0 +1,143 @@
+name: OnRobotVGP20
+communication_bus_system: 1
+conn_port: /dev/ttyUSB0
+gripper_slave_address: 65
+baudrate: 1000000
+data_bits: 8
+parity: 1
+stop_bits: 1
+Registers:
+  setCommand:
+    &setCommand
+    type: multiWrite
+    register_address: 0
+    registers:
+      - name: force
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: width
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: speed
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: cmdID
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+  setVaccum:
+    type: multiWrite
+    register_address: 0
+    registers:
+      - name: ChannelA
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: ChannelB
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: ChannelC
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: ChannelD
+        gui_element: slider
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+  getStatus:
+    &getStatus
+    type: multiRead
+    register_address: 256
+    registers:
+      - name: channelStatus
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+      - name: Status
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+  getChannelVaccumStatus:
+    &getChannelVaccumStatus
+    type: multiRead
+    register_address: 258
+    registers:
+      - name: ChannelAPercentantge
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+      - name: ChannelBPercentantge
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+      - name: ChannelCPercentantge
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+      - name: ChannelDPercentantge
+        gui_element: textfield
+        rule: None
+        rule_values: {}
+Functions:
+  init:
+    - command: setCommand
+      is_Shown: true
+      default_value:
+        - 64
+        - 64
+        - 64
+        - 64
+      <<: *setCommand
+  open:
+    - command: setCommand
+      is_Shown: true
+      default_value:
+        - 2168
+        - 2168
+        - 2168
+        - 2168
+      <<: *setCommand
+  close:
+    - command: setCommand
+      is_Shown: false
+      default_value:
+        - 128
+        - 128
+        - 128
+        - 128
+      <<: *setCommand
+  returnStatus:
+    - command: getStatus
+      is_Shown: false
+      default_value:
+        - null
+        - null
+      <<: *getStatus
+    - command: getChannelVaccumStatus
+      is_Shown: false
+      default_value:
+        - null
+        - null
+        - null
+        - null
+      <<: *getChannelVaccumStatus

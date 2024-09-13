@@ -1,0 +1,97 @@
+name: RobotiQ2F
+communication_bus_system: 1
+conn_port: /dev/ttyUSB0
+gripper_slave_address: 9
+baudrate: 115200
+data_bits: 8
+parity: 0
+stop_bits: 1
+Registers:
+  command:
+    &command
+    type: multiWrite
+    register_address: 1000
+    registers:
+      - name: cmdID
+        gui_element: textfield
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+      - name: width
+        gui_element: textfield
+        rule: InvertedBoundaries
+        rule_values:
+          min: 0
+          max: 255
+      - name: force
+        gui_element: textfields
+        rule: MinMaxBoundaries
+        rule_values:
+          min: 0
+          max: 65535
+  status:
+    &status
+    type: multiRead
+    register_address: 2000
+    registers:
+      - name: gripper_status
+        gui_element: None
+        rule: None
+        rule_values: {}
+      - name: kFLT-gFLT_gPR
+        gui_element: None
+        rule: None
+        rule_values: {}
+      - name: gPO_gCU
+        gui_element: None
+        rule: None
+        rule_values: {}
+Functions:
+  init:
+    - command: command
+      is_Shown: false
+      default_value:
+        - 0
+        - 0
+        - 0
+      <<: *command
+    - command: command
+      is_Shown: false
+      default_value:
+        - 256
+        - 0
+        - 0
+      <<: *command
+  grip:
+    - command: command
+      is_Shown: false
+      default_value:
+        - 2304
+        - 125
+        - 65535
+      <<: *command
+  open:
+    - command: command
+      is_Shown: false
+      default_value:
+        - 2304
+        - 0
+        - 65535
+      <<: *command
+  close:
+    - command: command
+      is_Shown: false
+      default_value:
+        - 2304
+        - 255
+        - 65535
+      <<: *command
+  getStatus:
+    - command: status
+      is_Shown: false
+      default_value:
+        - null
+        - null
+        - null
+      <<: *status
